@@ -17,6 +17,7 @@ countKeys(object, [options])
  - [Default functionality](#default-functionality)
  - [Excluding arrays](#excluding-arrays)
  - [Excluding sub-objects](#excluding-sub-objects)
+ - [Excluding keys below a certain depth](#excluding-keys-below-a-certain-depth)
  - [Custom filtering](#custom-filtering)
 
 ## Default functionality
@@ -92,6 +93,31 @@ var object = {
 var keyCount = countKeys(object, { recursive: false })
 
 // keyCount = 3
+```````
+
+## Excluding keys below a certain depth
+
+Similar to `recursive:false`. `maxDepth` will allow you to define a specific depth that you do not want to surpass when counting. `maxDepth:1` is essentially the same as `recursive:false`.
+
+```````js
+var countKeys = require('count-keys');
+
+var object = {
+  one: {
+    two : 'string',
+    three : {
+      keyA: ['string', 'string']
+    }
+  },
+  four: 'string',
+  five: {
+    six : 'string',
+  }
+}
+
+var keyCount = countKeys(object, { maxDepth: 2 })
+
+// keyCount = 6
 ```````
 
 ## Custom filtering
