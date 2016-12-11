@@ -11,18 +11,29 @@ bumpTasks();
 gulp.task('default', ()=>{
 
 	var object = {
-	  one: {
-	    two : 'string',
-	    three : {
-	      four: ['five', 'six']
-	    }
-	  },
-	  seven: 'string',
-	  eight: {
-	    nine : 'string',
-	  }
+		one: {
+			two : 'string',
+			three : {
+				four: ['five', 'six']
+			}
+		},
+		seven: 'string',
+		eight: {
+			nine : 'string',
+		}
 	}
 
-	console.log('\nresult:', countKeys(object),'\n');
+	console.log('\nresult:', countKeys(object, {
+		arrays: true,
+		recursive: true,
+		filter(item){
+			// available values in "item":
+			// item.key, item.value, item.count, item.parent
+
+			//if (item.value === 'string') return false;
+
+			//filter defaults to true if it returns 'undefined'
+		}
+	}),'\n');
 
 });
