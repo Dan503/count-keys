@@ -28,27 +28,26 @@ export default function countItems (obj, spec){
 	spec = defaultTo(spec, {
 		recursive: true,
 		arrays: true,
-		filter: (property, value, parent) => true,
+		filter: (key, value, parent) => true,
 	});
 
-	var count = 0;
-	let countEnable = true;
+	let count = 0;
 
 	function raiseCount(thisObject, parent){
-		var returnVal = count;
+		let returnVal = count;
 
 		thisObject = defaultTo(thisObject, {});
 
-		var isArray = thisObject.constructor === Array;
+		const isArray = thisObject.constructor === Array;
 
 		if (isArray && spec.arrays || !isArray && !spec.arrays){
-			for (let property in thisObject){
-				const value = thisObject[property];
+			for (const key in thisObject){
+				const value = thisObject[key];
 
 
 				if (thisObject.hasOwnProperty(property)){
 
-					const filter = spec.filter.call(thisObject, property, value, parent);
+					const filter = spec.filter.call(key, { key, value, count, parent });
 
 					if (filter) count ++;
 
