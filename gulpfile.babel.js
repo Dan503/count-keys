@@ -4,6 +4,9 @@ import gulp from 'gulp';
 import pjson from './package.json';
 import countKeys from './index';
 
+import bumpTasks from './gulp/bump';
+bumpTasks();
+
 // Default task to test the function
 gulp.task('default', ()=>{
 
