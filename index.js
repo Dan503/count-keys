@@ -1,12 +1,11 @@
 
 import defaultTo from 'default-to';
 
-
-export default function countItems (obj, spec){
+export default function countKeys (obj, spec){
 	spec = defaultTo(spec, {
 		recursive: true,
 		arrays: true,
-		filter: (key, value, parent) => true,
+		filter: (item) => true,
 	});
 
 	let count = 0;
@@ -16,24 +15,21 @@ export default function countItems (obj, spec){
 
 		thisObject = defaultTo(thisObject, {});
 
-		const isArray = thisObject.constructor === Array;
+		for (const key in thisObject){
+			const value = thisObject[key];
 
-		if (isArray && spec.arrays || !isArray && !spec.arrays){
-			for (const key in thisObject){
-				const value = thisObject[key];
+			if (thisObject.hasOwnProperty(key)){
+				const arrayCheck = spec.arrays ? true : isNaN(parseInt(key));
 
+				let filter = spec.filter.call(thisObject, { key, value, count, parent });
+				filter = defaultTo(filter, true);
 
-				if (thisObject.hasOwnProperty(property)){
+				if (filter && arrayCheck) count ++;
 
-					const filter = spec.filter.call(key, { key, value, count, parent });
-
-					if (filter) count ++;
-
-					if (spec.recursive && typeof value === 'object'){
-						returnVal = raiseCount(value, thisObject);
-					} else {
-						returnVal = count;
-					}
+				if (spec.recursive && typeof value === 'object'){
+					returnVal = raiseCount(value, thisObject);
+				} else {
+					returnVal = count;
 				}
 			}
 		}
