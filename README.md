@@ -6,11 +6,18 @@ A JS function for counting the number of keys there are in objects and arrays, i
 npm install count-keys --save
 ```````
 
-the first parameter in `countKeys` is the object you wish to count the number of items in. The second parameter takes
+The first parameter in `countKeys` is the object you wish to count the number of keys in. The second parameter takes various options that allow you to control the output.
 
 ``````js
 countKeys(object, options)
 ``````
+
+## Contents
+
+ - [Default functionality](#default-functionality)
+ - [Excluding arrays](#excluding-arrays)
+ - [Excluding sub-objects](#excluding-sub-objects)
+ - [Custom filtering](#custom-filtering)
 
 ## Default functionality
 
