@@ -1,28 +1,6 @@
 
 import defaultTo from 'default-to';
 
-//Method that counts the total number of keys in objects and arrays including nested ones
-
-/*
-var object = {
-  one: {
-    two : 'string',
-    three : {
-      four: ['five', 'six']
-    }
-  },
-  seven: 'string',
-  eight: {
-    nine : 'string',
-  }
-}
-
-countItems(object) = 9
-countItems(object, { arrays: false }) = 7
-countItems(object, { recursive: false }) = 3
-
-*/
-
 
 export default function countItems (obj, spec){
 	spec = defaultTo(spec, {
