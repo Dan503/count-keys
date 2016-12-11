@@ -1,34 +1,11 @@
 
 import defaultTo from 'default-to';
 
-//Method that counts the total number of keys in objects and arrays including nested ones
-
-/*
-var object = {
-  one: {
-    two : 'string',
-    three : {
-      four: ['five', 'six']
-    }
-  },
-  seven: 'string',
-  eight: {
-    nine : 'string',
-  }
-}
-
-countItems(object) = 9
-countItems(object, { arrays: false }) = 7
-countItems(object, { recursive: false }) = 3
-
-*/
-
-
-export default function countItems (obj, spec){
+export default function countKeys (obj, spec){
 	spec = defaultTo(spec, {
 		recursive: true,
 		arrays: true,
-		filter: (key, value, parent) => true,
+		filter: (item) => true,
 	});
 
 	let count = 0;
@@ -38,24 +15,21 @@ export default function countItems (obj, spec){
 
 		thisObject = defaultTo(thisObject, {});
 
-		const isArray = thisObject.constructor === Array;
+		for (const key in thisObject){
+			const value = thisObject[key];
 
-		if (isArray && spec.arrays || !isArray && !spec.arrays){
-			for (const key in thisObject){
-				const value = thisObject[key];
+			if (thisObject.hasOwnProperty(key)){
+				const arrayCheck = spec.arrays ? true : isNaN(parseInt(key));
 
+				let filter = spec.filter.call(thisObject, { key, value, count, parent });
+				filter = defaultTo(filter, true);
 
-				if (thisObject.hasOwnProperty(property)){
+				if (filter && arrayCheck) count ++;
 
-					const filter = spec.filter.call(key, { key, value, count, parent });
-
-					if (filter) count ++;
-
-					if (spec.recursive && typeof value === 'object'){
-						returnVal = raiseCount(value, thisObject);
-					} else {
-						returnVal = count;
-					}
+				if (spec.recursive && typeof value === 'object'){
+					returnVal = raiseCount(value, thisObject);
+				} else {
+					returnVal = count;
 				}
 			}
 		}

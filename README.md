@@ -9,7 +9,7 @@ npm install count-keys --save
 The first parameter in `countKeys` is the object you wish to count the number of keys in. The second parameter takes various options that allow you to control the output.
 
 ``````js
-countKeys(object, options)
+countKeys(object, [options])
 ``````
 
 ## Contents
@@ -119,6 +119,8 @@ var keyCount = countKeys(object, { filter: function(item){
     // item.key, item.value, item.count, item.parent
 
     if (item.value === 'string') return false;
+
+    //The filter will default to "true" if it returns "undefined"
 }})
 
 // keyCount = 6
