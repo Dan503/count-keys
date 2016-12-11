@@ -1,0 +1,27 @@
+{
+  "name": "count-keys",
+  "version": "1.0.0",
+  "description": "A JS function for counting the number of keys there are in objects and arrays, including nested objects and arrays",
+  "dependencies": {
+    "default-to": "^2.0.1"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dan503/count-keys.git"
+  },
+  "keywords": [
+    "js",
+    "object",
+    "objects",
+    "count",
+    "keys",
+    "key"
+  ],
+  "author": "Daniel Tonon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dan503/count-keys/issues"
+  },
+  "homepage": "https://github.com/Dan503/count-keys#readme"
+}
