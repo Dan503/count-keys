@@ -26,6 +26,7 @@ gulp.task('default', ()=>{
 	console.log('\nresult:', countKeys(object, {
 		arrays: true,
 		recursive: true,
+		maxDepth: 'none',
 		filter(item){
 			// available values in "item":
 			// item.key, item.value, item.count, item.parent
