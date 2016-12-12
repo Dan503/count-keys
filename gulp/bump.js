@@ -47,6 +47,8 @@ const args = minimist(process.argv.slice(2));
  *     gulp finish-release
  */
 
+const releaseBranch = 'release/version-update';
+
 export default function() {
 
 	function getBumpType(){
@@ -89,7 +91,6 @@ Valid importances: "--patch", "--minor", "--major"\n`;
 
 	//Do the first half of a Git Flow release
 	function startRelease(importance) {
-		const releaseBranch = 'release/version-update';
 
 		//creates new release branch
 		git.checkout(releaseBranch, {args:'-b'}, (err)=>{
