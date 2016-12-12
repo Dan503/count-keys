@@ -7,6 +7,8 @@ import bump from 'gulp-bump';
 import filter from 'gulp-filter';
 import tag_version from 'gulp-tag-version';
 import minimist from 'minimist';
+import babel from 'gulp-babel';
+import rename from 'gulp-rename';
 
 const args = minimist(process.argv.slice(2));
 
@@ -28,18 +30,24 @@ const args = minimist(process.argv.slice(2));
 **/
 
 /**
- * FULL GIT RELEASES
+ * GIT RELEASES
  *
- * You can use the commands
+ * You can use the commands to start the release
  *
- *     gulp release           # no version number change
- *     gulp release --patch   # makes v0.1.0 → v0.1.1
- *     gulp release --minor   # makes v0.1.1 → v0.2.0
- *     gulp release --major   # makes v0.2.1 → v1.0.0
+ *     gulp start-release           # no version number change
+ *     gulp start-release --patch   # makes v0.1.0 → v0.1.1
+ *     gulp start-release --minor   # makes v0.1.1 → v0.2.0
+ *     gulp start-release --major   # makes v0.2.1 → v1.0.0
  *
- * To do a full git flow release process automatically.
- * All changes must be committed to git before running this task
+ * This will [optionally] bump the version number then babelify the src.js file to make it npm friendly
+ * The file will then be ready to npm publish.
+ *
+ * To finish the release run:
+ *
+ *     gulp finish-release
  */
+
+const releaseBranch = 'release/version-update';
 
 export default function() {
 
@@ -81,48 +89,63 @@ Valid importances: "--patch", "--minor", "--major"\n`;
 			.pipe(tag_version());
 	}
 
-	//Do a full Git Flow release which can optionally include a version bump
-	function release(importance) {
-		const releaseBranch = 'release/version-update';
+	//Do the first half of a Git Flow release
+	function startRelease(importance) {
 
 		//creates new release branch
 		git.checkout(releaseBranch, {args:'-b'}, (err)=>{
 			checkError(err);
 
-			//increments the version number
-			if (importance !== false) versionBump(importance);
+			gulp.src('./src.js')
+				.pipe(babel())
+				.pipe(rename('index.js'))
+				.pipe(gulp.dest('./'))
+				.on('end', ()=>{
+					gulp.src('./index.js')
+						.pipe(git.commit('Bebelified src.js'))
+						.on('end',()=>{
+							//increments the version number
+							if (importance !== false) versionBump(importance);
 
-			setTimeout(()=>{
-				//checkout master branch
-				git.checkout('master', (err)=>{
-					checkError(err);
-					//merge releaseBranch into master
-					git.merge(releaseBranch, {args:'--no-ff'}, (err)=>{
-						checkError(err);
-						//check out develop branch
-						git.checkout('develop', (err)=>{
-							checkError(err);
-							//merge release branch into develop
-							git.merge(releaseBranch, {args:'--no-ff'}, (err)=>{
-								checkError(err);
-								//delete the release branch
-								git.branch(releaseBranch, {args:'-d'});
-							});
-						});
-					});
+							setTimeout(()=> console.log('\n  Now run "npm publish"\n'), 500);
+
+						})
 				});
-			}, importance !== false ? 2000 : 0);
 
 		});
+	}
 
+	function finishRelease(){
+		//checkout master branch
+		git.checkout('master', (err)=>{
+			checkError(err);
+			//merge releaseBranch into master
+			git.merge(releaseBranch, {args:'--no-ff'}, (err)=>{
+				checkError(err);
+				//check out develop branch
+				git.checkout('develop', (err)=>{
+					checkError(err);
+					//merge release branch into develop
+					git.merge(releaseBranch, {args:'--no-ff'}, (err)=>{
+						checkError(err);
+						//delete the release branch
+						git.branch(releaseBranch, {args:'-d'});
+					});
+				});
+			});
+		});
 	}
 
 	gulp.task('bump', function(){
 		return versionBump(getBumpType());
 	});
 
-	gulp.task('release', function(){
-		return release(getBumpType());
-	})
+	gulp.task('start-release', function(){
+		return startRelease(getBumpType());
+	});
+
+	gulp.task('finish-release', function(){
+		return finishRelease();
+	});
 
 }
