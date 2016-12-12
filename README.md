@@ -142,7 +142,7 @@ var object = {
 
 var keyCount = countKeys(object, { filter: function(item){
     // available values in "item":
-    // item.key, item.value, item.count, item.parent
+    // item.key, item.value, item.count, item.parent, item.depth
 
     if (item.value === 'string') return false;
 
@@ -158,5 +158,6 @@ These are the values you have available to you in the "item" variable:
 - **value:** The value for the current key/value pair
 - **count:** The count as it is so far
 - **parent:** The object containing the current key/value pair
+- **depth:** The depth of the current key/value pair
 
 
